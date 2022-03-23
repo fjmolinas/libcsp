@@ -14,6 +14,9 @@
     #include <FreeRTOS.h>
     #include <task.h>
     typedef TaskHandle_t csp_bin_sem_t;
+#elif (CSP_RIOT)
+    #include "sema.h"
+    typedef sema_t csp_bin_sem_t;
 #elif (CSP_ZEPHYR)
     #include <zephyr.h>
     typedef struct k_sem csp_bin_sem_t;
