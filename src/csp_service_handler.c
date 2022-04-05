@@ -240,7 +240,7 @@ void csp_service_handler(csp_packet_t * packet) {
 
 			uint32_t total = 0;
 			total = csp_memfree_hook();
-			
+
 			total = htobe32(total);
 			memcpy(packet->data, &total, sizeof(total));
 			packet->length = sizeof(total);

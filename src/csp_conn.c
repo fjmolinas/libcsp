@@ -107,7 +107,7 @@ csp_conn_t * csp_conn_find_existing(csp_id_t * id) {
 		/* Outgoing connections are uniquely defined by the source port,
 		 * So only the incoming destination port must match. This means
 		 * that responses to broadcast addresses, are accepted as long
-		 * as the incoming port matches the unique source port of the 
+		 * as the incoming port matches the unique source port of the
 		 * connection */
 		if (conn->type == CONN_CLIENT) {
 
@@ -119,7 +119,7 @@ csp_conn_t * csp_conn_find_existing(csp_id_t * id) {
 		 * destination port, as well as the source node. Incoming
 		 * connections can never come from a brodcast address */
 		} else {
-      
+
 			/* Connection must match dport */
 			if (conn->idin.dport != id->dport)
 				continue;
@@ -134,7 +134,7 @@ csp_conn_t * csp_conn_find_existing(csp_id_t * id) {
 
 		}
 
-		
+
 
 		/* All conditions found! */
 		return conn;
@@ -243,7 +243,7 @@ int csp_conn_close(csp_conn_t * conn, uint8_t closed_by) {
 
 	/* Set to closed */
 	conn->state = CONN_CLOSED;
-	
+
 	return CSP_ERR_NONE;
 }
 
@@ -251,17 +251,17 @@ csp_conn_t * csp_connect(uint8_t prio, uint16_t dest, uint8_t dport, uint32_t ti
 
 	/* Force options on all connections */
 	opts |= csp_conf.conn_dfl_so;
-	
+
 	/* Generate identifier */
 	csp_id_t incoming_id, outgoing_id;
 
 	/* Use 0 as incoming id (this disables the input filter on destination node)
 	 * This means that for this outgoing connection, we accept the answer coming to whatever address
-	 * the outgoing interface has. CSP does not support "source address" on outgoing connections 
-	 * so the outgoing source address will be automatically applied after outgoing routing 
+	 * the outgoing interface has. CSP does not support "source address" on outgoing connections
+	 * so the outgoing source address will be automatically applied after outgoing routing
 	 * selects which interface the packet will leavve from */
-	incoming_id.dst = 0; 
-	outgoing_id.src = 0; 
+	incoming_id.dst = 0;
+	outgoing_id.src = 0;
 
 	incoming_id.pri = prio;
 	outgoing_id.pri = prio;
@@ -368,7 +368,7 @@ void csp_conn_print_table(void) {
 		          conn->idin.dport, conn->idin.sport, conn->sport_outgoing, conn->idin.flags);
 #if (CSP_USE_RDP)
 		if (conn->idin.flags & CSP_FRDP) {
-			csp_print("\tRDP: S:%d (closed by 0x%x), rcv %u, snd %u, win %" PRIu32 "\n", 
+			csp_print("\tRDP: S:%d (closed by 0x%x), rcv %u, snd %u, win %" PRIu32 "\n",
 			          conn->rdp.state, conn->rdp.closed_by, conn->rdp.rcv_cur, conn->rdp.snd_una, conn->rdp.window_size);
 		}
 #endif
@@ -389,7 +389,7 @@ int csp_conn_print_table_str(char * str_buf, int str_size) {
 		csp_conn_t * conn = &arr_conn[i];
 		char buf[100];
 		snprintf(buf, sizeof(buf), "[%02u %p] S:%u, %u -> %u, %u -> %u (%u)\n",
-				 i, conn, conn->state, conn->idin.src, conn->idin.dst,
+				 i, (void*)conn, conn->state, conn->idin.src, conn->idin.dst,
 				 conn->idin.dport, conn->idin.sport, conn->sport_outgoing);
 
 		strncat(str_buf, buf, str_size);

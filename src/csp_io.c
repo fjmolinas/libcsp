@@ -90,8 +90,8 @@ void csp_send_direct(csp_id_t idout, csp_packet_t * packet, csp_iface_t * routed
 	int local_found = 0;
 
 	while ((iface = csp_iflist_get_by_subnet(idout.dst, iface)) != NULL) {
-		
-		/* Do not send back to same inteface (split horizon) 
+
+		/* Do not send back to same inteface (split horizon)
 		 * This check is is similar to that below, but faster */
 		if (iface == routed_from) {
 			continue;
@@ -104,7 +104,7 @@ void csp_send_direct(csp_id_t idout, csp_packet_t * packet, csp_iface_t * routed
 
 		/* Apply outgoing interface address to packet */
 		idout.src = iface->addr;
-		
+
 		/* Todo: Find an elegant way to avoid making a copy when only a single destination interface
 		 * is found. But without looping the list twice. And without using stack memory.
 		 * Is this even possible? */
@@ -129,7 +129,7 @@ void csp_send_direct(csp_id_t idout, csp_packet_t * packet, csp_iface_t * routed
 	}
 
 	csp_buffer_free(packet);
-	
+
 }
 
 __attribute__((weak)) void csp_output_hook(csp_id_t idout, csp_packet_t * packet, csp_iface_t * iface, uint16_t via, int from_me) {
@@ -332,5 +332,5 @@ void csp_sendto_reply(const csp_packet_t * request_packet, csp_packet_t * reply_
 		reply_packet->id.flags = request_packet->id.flags;
 	}
 
-	return csp_sendto(request_packet->id.pri, request_packet->id.src, request_packet->id.sport, request_packet->id.dport, opts, reply_packet);
+	csp_sendto(request_packet->id.pri, request_packet->id.src, request_packet->id.sport, request_packet->id.dport, opts, reply_packet);
 }

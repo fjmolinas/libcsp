@@ -170,7 +170,7 @@ int csp_route_work(void) {
 	}
 
 	/**
-	 * Callbacks 
+	 * Callbacks
 	 */
 	csp_callback_t callback = csp_port_get_callback(packet->id.dport);
 	if (callback) {
@@ -185,7 +185,7 @@ int csp_route_work(void) {
 	}
 
 	/**
-	 * Sockets 
+	 * Sockets
 	 */
 
 	/* The message is to me, search for incoming socket */
@@ -204,7 +204,7 @@ int csp_route_work(void) {
 			csp_buffer_free(packet);
 			return 0;
 		}
-		
+
 		return CSP_ERR_NONE;
 	}
 

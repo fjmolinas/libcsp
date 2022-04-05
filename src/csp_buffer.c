@@ -13,7 +13,7 @@
 typedef struct csp_skbf_s {
 	unsigned int refcount;
 	void * skbf_addr;
-	char skbf_data[];  // -> csp_packet_t
+	char skbf_data[CSP_BUFFER_SIZE + CSP_BUFFER_PACKET_OVERHEAD];  // -> csp_packet_t
 } csp_skbf_t;
 
 #define SKBUF_SIZE CSP_BUFFER_ALIGN *((sizeof(csp_skbf_t) + CSP_BUFFER_SIZE + CSP_BUFFER_PACKET_OVERHEAD + (CSP_BUFFER_ALIGN - 1)) / CSP_BUFFER_ALIGN)
