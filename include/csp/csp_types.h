@@ -33,6 +33,8 @@ typedef enum {
 
 /** Listen on all ports, primarily used with csp_bind() */
 #define CSP_ANY				255
+#define CSP_PORT_ANY		CSP_ANY
+#define CSP_PORT_UNSET		0
 
 /**
    Message priority.
