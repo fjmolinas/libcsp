@@ -125,6 +125,7 @@ void csp_send_direct(csp_id_t* idout, csp_packet_t * packet, csp_iface_t * route
 	/* Try to send via routing table */
 	csp_route_t * route = csp_rtable_find_route(idout->dst);
 	if (route != NULL) {
+		idout->src = route->iface->addr;
 		csp_send_direct_iface(idout, packet, route->iface, route->via, from_me);
 		return;
 	}
@@ -133,9 +134,9 @@ void csp_send_direct(csp_id_t* idout, csp_packet_t * packet, csp_iface_t * route
 	
 }
 
-__attribute__((weak)) void csp_output_hook(csp_id_t idout, csp_packet_t * packet, csp_iface_t * iface, uint16_t via, int from_me) {
+__attribute__((weak)) void csp_output_hook(csp_id_t* idout, csp_packet_t * packet, csp_iface_t * iface, uint16_t via, int from_me) {
 	csp_print_packet("OUT: S %u, D %u, Dp %u, Sp %u, Pr %u, Fl 0x%02X, Sz %u VIA: %s (%u)\n",
-				idout.src, idout.dst, idout.dport, idout.sport, idout.pri, idout.flags, packet->length, iface->name, (via != CSP_NO_VIA_ADDRESS) ? via : idout.dst);
+				idout->src, idout->dst, idout->dport, idout->sport, idout->pri, idout->flags, packet->length, iface->name, (via != CSP_NO_VIA_ADDRESS) ? via : idout->dst);
 	return;
 }
 
@@ -321,8 +322,6 @@ void csp_sendto(uint8_t prio, uint16_t dest, uint8_t dport, uint8_t src_port, ui
 	packet->id.src = 0; // The source address will be filled by csp_send_direct
 	packet->id.sport = src_port;
 	packet->id.pri = prio;
-
-	printf("set outgoing address %"PRIx16":%d\n", packet->id.src, packet->id.sport);
 
 	csp_send_direct(&packet->id, packet, NULL);
 
