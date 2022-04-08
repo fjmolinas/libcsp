@@ -14,10 +14,11 @@
 #define CSP_QUEUE_OK 0
 #define CSP_QUEUE_ERROR -1
 
-typedef void * csp_queue_handle_t;
 
 #if (CSP_FREERTOS)
 typedef StaticQueue_t csp_static_queue_t;
+#elif (CSP_RIOT)
+#include "csp_types_riot.h"
 #elif (CSP_ZEPHYR)
 #include <zephyr.h>
 typedef struct k_msgq csp_static_queue_t;
