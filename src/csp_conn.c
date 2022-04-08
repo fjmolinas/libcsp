@@ -13,11 +13,7 @@
 #include <csp/csp_debug.h>
 #include "csp_rdp_queue.h"
 #include "csp_rdp.h"
-
-#define OUTGOING_PORTS (((1 << (CSP_ID2_PORT_SIZE)) - 1) - CSP_PORT_MAX_BIND)
-#if OUTGOING_PORTS > CSP_CONN_MAX
-#error "More connections than available outgoing ports"
-#endif
+#include "csp_port.h"
 
 /* Connection pool */
 static csp_conn_t arr_conn[CSP_CONN_MAX] __attribute__((section(".noinit")));
@@ -52,7 +48,7 @@ void csp_conn_init(void) {
 	for (int i = 0; i < CSP_CONN_MAX; i++) {
 		csp_conn_t * conn = &arr_conn[i];
 
-		conn->sport_outgoing = CSP_PORT_MAX_BIND + 1 + i;
+		conn->sport_outgoing = CSP_PORT_UNSET;
 		conn->state = CONN_CLOSED;
 		conn->idin.flags = 0;
 		conn->rx_queue = csp_queue_create_static(CSP_CONN_RXQUEUE_LEN, sizeof(csp_packet_t *), conn->rx_queue_static_data, &conn->rx_queue_static);
@@ -308,7 +304,8 @@ csp_conn_t * csp_connect(uint8_t prio, uint16_t dest, uint8_t dport, uint32_t ti
 		return NULL;
 	}
 
-	/* Outgoing connections always use pre-defined source port */
+	/* get a port for the outgoing connection */
+	conn->sport_outgoing = csp_port_get_dyn_free();
 	conn->idout.sport = conn->sport_outgoing;
 	conn->idin.dport = conn->sport_outgoing;
 	conn->dest_socket = NULL;
